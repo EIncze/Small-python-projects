@@ -14,36 +14,32 @@ def grabber(key):
     try:
         return data[key.lower()]
     except KeyError:
-        try:
-            a, b, c = get_close_matches(key.lower(), data.keys(), n=3, cutoff=0.6)
-            if a == key.title():
-                return data[key.title()]
-            elif key.upper() in data: 
-                return data[key.upper()]
-            choice =  input('Did you mean %s? (Press Y for \'Yes\' or N for \'No\') ' %a).lower()
-            if choice == 'y':
-                return data[a]
-            elif input('Did you mean %s? (Press Y for \'Yes\' or N for \'No\') ' %b).lower() == 'y':
-                return data[b]
-            elif input('Did you mean %s? (Press Y for \'Yes\' or N for \'No\') ' %c).lower() == 'y':
-                return data[c]
-            else:
-                return 'Please check your spelling and try again'
-        except ValueError:
-            return grabber(input('Please enter a valid word: '))
+        if key.title() in data.keys():
+            return data[key.title()]
+        elif key.upper() in data.keys():
+            return data[key.upper()]
+        else:
+            try:
+                a, b, c = get_close_matches(key.lower(), data.keys(), n=3, cutoff=0.6)
+                choice =  input(f'Did you mean {a.lower()}? (Press Y for "Yes" or N for "No") ')
+                if choice.lower() == 'y':
+                    return data[a]
+                elif input(f'Did you mean {b}? (Press Y for "Yes" or N for "No") ').lower() == 'y':
+                    return data[b]
+                elif input(f'Did you mean {c}? (Press Y for "Yes" or N for "No") ').lower() == 'y':
+                    return data[c]
+                else:
+                    return 'Please check your spelling and try again'
+            except ValueError:
+                return grabber(input('Please enter a valid word: '))
 
 
-word = input("Please enter word: ")
-out = grabber(word)
-if type(out) == list:
-    for item in out:
-        print(item)
-decide = 'y'
-while decide == 'y':
-    decide = input('Would you like to try another? Press Y for \'Yes\', or any other key to exit ').lower()
-    if decide != 'y':
-        break
+
+while True:
     out = grabber(input("Please enter word: "))
     if type(out) == list:
         for item in out:
             print(item)
+    decide = input('Would you like to try another? Press Y for "Yes", or any other key to exit ').lower()
+    if decide != 'y':
+        break
